@@ -43,3 +43,9 @@ systemctl start firewalld
 firewall-cmd --zone=public --permanent --add-service=http
 
 In case you wish to close a specific port use the --remove-port option.
+
+Fixing when Permission denied: make_sock: could not bind to address [::]:91
+dnf provides */semanage
+sudo dnf install policycoreutils-python-utils
+Example: allow port 91 for httpd domain processes
+sudo semanage port -a -t http_port_t -p tcp 91
