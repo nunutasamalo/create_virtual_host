@@ -56,7 +56,7 @@ Creating Apache Virtual Host in Rocky Linux
 
 	Then restart your Apache HTTP Web Server using below command.
 
-	$ service httpd restart
+	$ service restart httpd
 
 6. Create Simple VirtualHost File for our domain registration.clickmayora.local
 	---------------------------------------------------------------
