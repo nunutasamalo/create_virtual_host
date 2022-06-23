@@ -23,6 +23,7 @@ firewall-cmd --get-zone-of-interface=eth0
 command to open port 81 for TCP traffic.
 
 firewall-cmd --add-port 81/tcp
+firewall-cmd --reload
 
 command to open port 81 for TCP traffic after reboot. Use this command to make changes persistent.
 
