@@ -1,0 +1,96 @@
+The default Apache configuration is suitable to run a single website, 
+but if you want to run multiple website domains, 
+you should use the Apache Virtual Hosts directive feature.
+
+Now We will create virtual host to host to run a website domain called ‘registration.clickmayora.local‘
+
+1. Create a separate virtual host directory and a log directory to hold the log files with the right permissions.
+	---------------------------------------------------------------
+	$ sudo mkdir -p /var/www/registration.clickmayora.local/html
+	$ sudo mkdir -p /var/www/registration.clickmayora.local/log
+	$ sudo chown -R $USER:$USER /var/www/registration.clickmayora.local/html
+	$ sudo chmod -R 755 /var/www
+
+2. Next, create a sample index.html file to test the site.
+	---------------------------------------------------------------
+	$ sudo vi /var/www/registration.clickmayora.local/html/index.html
+	
+3. Populate it with the following HTML code.
+	---------------------------------------------------------------
+	<!DOCTYPE html>
+	<html lang="en">
+	<head>
+	  <meta charset="UTF-8">
+	  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	  <title>Document</title>
+	</head>
+	<body>
+	  <h1>LinuxShellTips Introduces registration.clickmayora.local</h1>
+	  <p>You have successfully accessed registration.clickmayora.local home page!</p>
+	</body>
+	</html>
+
+Creating Apache Virtual Host in Rocky Linux 
+
+4. Now create main directories called sites-available and sites-enabled for holding the virtual host files.
+	---------------------------------------------------------------
+	$ sudo mkdir /etc/httpd/sites-available
+	$ sudo mkdir /etc/httpd/sites-enabled
+
+
+5. Edit apache configuration
+	---------------------------------------------------------------
+	Mention the sites-enabled directory path in the Apache configuration file that needs access to the virtual host files.
+	Simply put the following command “IncludeOptional sites-enabled/*.conf” at the bottom line of the httpd.conf file.
+
+	$ sudo vi /etc/httpd/conf/httpd.conf
+
+	In the end, add the following line and close the file.
+	IncludeOptional sites-enabled/*.conf
+
+	Test if your Apache config have no issues with the following command.
+
+	$ httpd -t
+	Syntax OK
+
+	Then restart your Apache HTTP Web Server using below command.
+
+	$ service httpd restart
+
+6. Create Simple VirtualHost File for our domain registration.clickmayora.local
+	---------------------------------------------------------------
+
+	<VirtualHost *:81>
+		ServerAdmin www.registration.clickmayora.local
+		ServerAlias registration.clickmayora.local
+		DocumentRoot /var/www/registration.clickmayora.local/html
+		ErrorLog /var/www/registration.clickmayora.local/log/error.log
+		CustomLog /var/www/registration.clickmayora.local/log/access.log combined
+	</VirtualHost>
+
+6. To active our virtual host file, you need to create a symbolic link between the sites-available and the sites-enabled directories.
+	---------------------------------------------------------------
+	Please note that all of your website virtualhost is saved at /etc/httpd/sites-available but it’s not enabled by default if you don’t enabled it from your side.
+	There also sites-enabled which is actually symbolic link a.k.a symlink of the sites-available directory. 
+	Your website can running properly after creating symlink from sites-available directory.
+
+	$ sudo ln -s /etc/httpd/sites-available/registration.clickmayora.local /etc/httpd/sites-enabled/registration.clickmayora.local.conf  
+
+7.Update SELinux Config
+	---------------------------------------------------------------
+	$ setsebool -P httpd_unified 1
+
+8.Finally, restart the Apache and make sure it is running.
+	---------------------------------------------------------------
+	$ sudo systemctl restart httpd 
+	$ sudo systemctl status httpd
+
+9. Then launch your web browser and browse your domain as follows
+	---------------------------------------------------------------
+	http://registration.clickmayora.local	
+	
+
+
+
+
