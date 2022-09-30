@@ -1,0 +1,45 @@
+mkdir -p /var/www/registration.clickmayora.co.id/html
+
+mkdir -p /var/www/registration.clickmayora.co.id/log
+
+
+chown -R apache:apache /var/www/registration.clickmayora.co.id/html
+
+chmod -R 755 /var/www/registration.clickmayora.co.id
+
+mkdir /etc/httpd/sites-available
+mkdir /etc/httpd/sites-enabled
+
+
+Ubah file /etc/httpd/conf/httpd.conf dan tambahkan kode dibawah ini pada baris terakhir file :
+
+IncludeOptional sites-enabled/*.conf
+
+
+<VirtualHost *:80>
+    ServerName registration.clickmayora.co.id
+    ServerAlias www.registration.clickmayora.co.id
+    DocumentRoot /var/www/registration.clickmayora.co.id/html
+    ErrorLog /var/www/registration.clickmayora.co.id/log/error.log
+    CustomLog /var/www/registration.clickmayora.co.id/log/access.log combined
+</VirtualHost>
+
+
+Daftarkan file vhost.dede-gunawan.web.id.conf ke dalam direktori sites-enabled menggunakan symbolic link dengan perintah :
+
+ln -s /etc/httpd/sites-available/registration.clickmayora.co.id.conf /etc/httpd/sites-enabled/registration.clickmayora.co.id.conf
+systemctl restart httpd
+
+
+test
+<html>
+  <head>
+    <title>Selamat Datang di registration clickmayora.co.ic!</title>
+  </head>
+  <body>
+    <h1>Berhasil! virtual host web registration.clickmayora berhasil dibuat.</h1>
+  </body>
+</html>
+
+
+https://www.digitalocean.com/community/tutorials/how-to-secure-apache-with-let-s-encrypt-on-centos-7
