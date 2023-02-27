@@ -60,6 +60,8 @@ Creating Apache Virtual Host in Rocky Linux
 
 6. Create Simple VirtualHost File for our domain registration.clickmayora.local
 	---------------------------------------------------------------
+	
+	sudo nano /etc/httpd/sites-available/registration.clickmayora.local.conf
 
 	<VirtualHost *:81>
 		ServerAdmin www.registration.clickmayora.local
@@ -75,7 +77,13 @@ Creating Apache Virtual Host in Rocky Linux
 	There also sites-enabled which is actually symbolic link a.k.a symlink of the sites-available directory. 
 	Your website can running properly after creating symlink from sites-available directory.
 
-	$ sudo ln -s /etc/httpd/sites-available/registration.clickmayora.local /etc/httpd/sites-enabled/registration.clickmayora.local.conf  
+	$ sudo ln -s /etc/httpd/sites-available/registration.clickmayora.local.conf /etc/httpd/sites-enabled/registration.clickmayora.local.conf
+	
+	
+	
+	semanage fcontext -a -t httpd_log_t "/var/www/registration.clickmayora.local/log(/.*)?"
+	sudo restorecon -R -v /var/www/registration.clickmayora.local/log
+	
 
 7.Update SELinux Config
 	---------------------------------------------------------------
@@ -93,4 +101,14 @@ Creating Apache Virtual Host in Rocky Linux
 
 
 
+10. Add SSL
+		
+		ServerAdmin www.registration.clickmayora.local
+		ServerAlias registration.clickmayora.local
+		DocumentRoot /var/www/registration.clickmayora.local/html
+		ErrorLog /var/www/registration.clickmayora.local/log/error.log
+		CustomLog /var/www/registration.clickmayora.local/log/access.log combined
+		SSLEngine On
+		SSLCertificateFile /etc/pki/tls/certs/servermposdrc.crt
+		SSLCertificateKeyFile /etc/pki/tls/private/servermposdrc.key
 
