@@ -80,14 +80,38 @@ Creating Apache Virtual Host in Rocky Linux
 	$ sudo ln -s /etc/httpd/sites-available/registration.clickmayora.local.conf /etc/httpd/sites-enabled/registration.clickmayora.local.conf
 	
 	
-	
+6a. To move apache log to this folder instead of to default httpd logs	
 	semanage fcontext -a -t httpd_log_t "/var/www/registration.clickmayora.local/log(/.*)?"
 	sudo restorecon -R -v /var/www/registration.clickmayora.local/log
 	
-
+Allow Apche to write to directory(This can be achive by adjusting selinus univerlally or spefic folder
 7.Update SELinux Config
 	---------------------------------------------------------------
 	$ setsebool -P httpd_unified 1
+	
+	
+	chcon -Rv --type=httpd_sys_rw_content_t /var/www/html/uploads/ (open specific folder, ex. folder uploads)
+
+	Ownership 
+	chown apache:apache -R /var/www/html/
+
+	Recursive File permissions (ubah hak akses file menjadi 644)
+	find . -type f -exec chmod 0644 {} \;
+
+	Recursive Directory permissions (ubah hak akses folder menjadi 755)
+	find . -type d -exec chmod 0755 {} \;
+
+	Resursive SELinux serve files off Apache
+	chcon -t httpd_sys_content_t /var/www/html/ -R
+
+	Allow write to specific directories
+	chcon -t httpd_sys_rw_content_t /var/www/html/logs/ -R
+	chcon -t httpd_sys_rw_content_t /var/www/html/uploads/ -R
+
+	httpd_sys_content_t – allow Apache to serve contents
+	httpd_sys_rw_content_t – allow Apache to write to those path.
+
+
 
 8.Finally, restart the Apache and make sure it is running.
 	---------------------------------------------------------------
